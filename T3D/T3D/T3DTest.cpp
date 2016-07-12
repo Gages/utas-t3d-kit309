@@ -42,6 +42,7 @@ namespace T3D{
 
 	bool T3DTest::init(){
 		// Call init of superclass (sets up sdl and opengl)
+		//Bug: not checking return value
 		WinGLApplication::init();
 
 		//Create a skybox and add some fog
