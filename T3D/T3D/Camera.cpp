@@ -67,4 +67,33 @@ namespace T3D
 	{
 	}
 
+	void Camera::calculateWorldSpaceFrustum() {
+
+		float horizontal_angle = Math::DEG2RAD * (90 + (fovx() / 2));
+		frustum = {
+			Plane(Vector3(0.0,0.0,-1.0), far),
+			Plane(Vector3(0.0, 0.0,1.0), -near),
+			Plane(-Vector3(sin(horizontal_angle), 0, cos(horizontal_angle)), 0.0),
+			Plane(-Vector3(sin(-horizontal_angle), 0, cos(-horizontal_angle)), 0.0),
+			//Plane(),
+			//Plane(),
+		};
+
+		//get the world space transformation matrix;
+		auto transform = gameObject->getTransform()->getWorldMatrix();
+		for (Plane& p : frustum) p = transform * p;
+	}
+
+	bool Camera::cull(GameObject* obj) {
+		Vector3 objpos = obj->getTransform()->getWorldPosition();
+		printf("Right clip distance: %f\n", frustum[3].getDistance(objpos));
+
+		for (Plane p : frustum) {
+			if (p.getDistance(objpos) > 0) return false;
+		}
+
+
+		return true;
+	}
+
 }

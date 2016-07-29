@@ -82,21 +82,32 @@ namespace T3D
 		}
 	};
 
+	static bool cull_object(Camera* cam, GameObject* obj) {
+	//	return cam != NULL ? cam->cull(obj) : false;
+		return cam->cull(obj);
+	}
+
 	/*! Renders the scenegraph
 	  This method is responsible for sorting by material and rendering game objects in material priority order
 	  \param root	The root of the scenegraph to be rendered
 	  */
 	void Renderer::render(Transform *root){
+
+		if (camera == NULL) return;
+
 		Vector3 cameraPos;
 		float distance;
 		GameObject *object;
 		std::vector<Material*>::iterator mit;
 
 		// Single common camera for all rendering
-		if (camera)
+		//if (camera) {
 			cameraPos = camera->gameObject->getTransform()->getWorldPosition();
-		else
-			cameraPos = Vector3(0,0,0);
+			camera->calculateWorldSpaceFrustum();
+		//}
+		//else {
+//			cameraPos = Vector3(0, 0, 0);
+	//	}
 
 		buildRenderQueue(root);
 
@@ -114,7 +125,7 @@ namespace T3D
 					loadMaterial(*mit);
 					while (!q.empty()) {
 						object = q.front();
-						if (object->isVisible()) {
+						if (cull_object(camera, object) && object->isVisible()) {
 							draw(object);
 						}
 						q.pop();
@@ -125,7 +136,7 @@ namespace T3D
 					// objects to be sorted and drawn later
 					while (!q.empty()) {
 						object = q.front();
-						if (object->isVisible()) {
+						if (cull_object(camera, object) && object->isVisible()) {
 							// Note using squared distance as we only care about relative distance
 							distance = cameraPos.squaredDistance(object->getTransform()->getWorldPosition());
 							object->setDistanceToCamera(distance);

@@ -1,0 +1,36 @@
+frames: 3265
+elapsed time: 8.3
+frame rate (min/avg/max): 236.8 / 394.3 / 569.5
+frames: 3139
+elapsed time: 4.5
+frame rate (min/avg/max): 596.0 / 696.9 / 781.5
+frames: 399
+elapsed time: 1.5
+frame rate (min/avg/max): 258.3 / 261.8 / 294.1
+frames: 284
+elapsed time: 1.0
+frame rate (min/avg/max): 318.2 / 284.9 / 328.9
+frames: 534
+elapsed time: 2.3
+frame rate (min/avg/max): 238.4 / 230.4 / 271.5
+frames: 41732
+elapsed time: 54.1
+frame rate (min/avg/max): 117.6 / 771.5 / 986.8
+frames: 37765
+elapsed time: 45.1
+frame rate (min/avg/max): 360.0 / 837.5 / 907.3
+frames: 15436
+elapsed time: 20.2
+frame rate (min/avg/max): 76.9 / 762.6 / 1026.5
+frames: 9756
+elapsed time: 16.2
+frame rate (min/avg/max): 114.6 / 600.9 / 993.4
+frames: 27694
+elapsed time: 34.1
+frame rate (min/avg/max): 298.0 / 813.2 / 907.3
+frames: 22290
+elapsed time: 28.0
+frame rate (min/avg/max): 289.5 / 797.0 / 920.5
+frames: 27157
+elapsed time: 33.8
+frame rate (min/avg/max): 357.6 / 802.8 / 867.6

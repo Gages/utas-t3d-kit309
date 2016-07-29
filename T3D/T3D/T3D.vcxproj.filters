@@ -222,6 +222,9 @@
     <ClCompile Include="Tutorial1_Baseline.cpp">
       <Filter>Source Files\Application</Filter>
     </ClCompile>
+    <ClCompile Include="Tutorial2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mesh.h">
@@ -385,6 +388,9 @@
     </ClInclude>
     <ClInclude Include="Tutorial1_Baseline.h">
       <Filter>Header Files\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Tutorial2.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

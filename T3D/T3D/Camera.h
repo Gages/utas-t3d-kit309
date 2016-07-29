@@ -35,6 +35,9 @@ namespace T3D
 		Camera(projectionType type, double near, double far, double left, double right, double bottom, double top);
 		virtual ~Camera();
 
+		bool cull(GameObject* obj);
+		void calculateWorldSpaceFrustum();
+
 	public:
 		projectionType type;	// projection type
 
@@ -45,8 +48,14 @@ namespace T3D
 		double fovy;			// field of view (angle in degrees)
 		double aspect;			// field of view in X direction - ratio of x(width) to y(height)
 
+		double fovx() { return Math::RAD2DEG * 2.0f * atan(aspect * tan(fovy * Math::DEG2RAD / 2.0f));  }
+
 		// Orthographic only
 		double left,right,top,bottom;	// view extent
+
+	private:
+		//view frustum planes
+		std::vector<Plane> frustum;
 
 	};
 }
