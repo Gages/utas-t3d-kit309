@@ -48,8 +48,12 @@ namespace T3D{
 	bool BoundingSphere::contains(Vector3 point) const {
 		//the identity value does not contain any points.
 		//a radius of zero marks the identity value.
-		//therefore, when the radius is zero, even a point directory over this position is not in the bounding sphere
-		//i.e 0 < 0 == false.
+		
+		//the below version might be more forgiving (includes points lying along the radius,
+		//but still excludes all when the radius is zero
+		//return !isIdentity() && _position.squaredDistance(point) <= _radiusSqr;
+
+		//however this version works (and still excludes the origin point when the radius is zero)
 		return _position.squaredDistance(point) < _radiusSqr;
 	}
 
@@ -61,7 +65,7 @@ namespace T3D{
 		if (other.isIdentity()) return *this;
 
 		Vector3 p1 = _position, p2 = other._position;
-		float   r1 = sqrt(_radiusSqr), r2 = sqrt(other._radiusSqr);
+		double   r1 = sqrt(_radiusSqr), r2 = sqrt(other._radiusSqr);
 		//ensure that r1 is the bigger sphere
 		if (r1 < r2) {
 			std::swap(r1, r2);

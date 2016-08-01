@@ -20,18 +20,18 @@ namespace T3D {
 		//forall a b : BindingSphere, a.growToContain(b) == b.growToContain(a).
 		BoundingSphere growToContain(BoundingSphere other) const;
 
-		//Warning!! if radius is zero, this sphere will actually contains no points! (i.e it will be equivalent to the identity value)
-		//to create a small sphere which contains its center, use createfromPoint.
-		//to explicitly create an empty bounding sphere (that contains no points), use Identity().
-		BoundingSphere(Vector3 position, float radius);
-		//~BoundingSphere();
-
 		static BoundingSphere createFromMesh(Mesh const*);
 		//What if we want to create a point-sphere that is really small, but not the identity value (which contains no points)?
-		static BoundingSphere createFromPoint(Vector3 position) { return BoundingSphere(position, std::numeric_limits<float>::epsilon()); }
-		//test: forall p : Vector3, BoundingSphere::createFromPoint(p).contains(p) == true.
+		//just leave out rad and the default value will be used.
+		//if you want a bounding sphere with no points, explicitly call Identity
+		static BoundingSphere create(Vector3 position, float rad = 0.00001f) {
+			return BoundingSphere(position, std::max(rad, 0.00001f));
+		}
+		//test: forall p : Vector3, BoundingSphere::create(p).contains(p) == true.
 		//test: forall p : Vector3, BoundingSphere::Identity().contains(p) == false.
-		//test: forall p : Vector3, BoundingSphere::createFromPoint(p).isIdentity() == false.
+		//test: forall p : Vector3, BoundingSphere::create(p).isIdentity() == false.
+
+
 		
 		//forall a : Vector3, b c : BoundingSphere, b.contains(a) || c.contains(a) -> b.growToContain(c).contains(a).
 		bool           contains(Vector3) const;
@@ -48,6 +48,13 @@ namespace T3D {
 
 		BoundingSphere(); //unlabelled identity constructor
 
+		//Warning!! 
+		//one should not create a sphere with radius < 0.00001f using this constructor.
+		//This is because to do otherwise creates bugs (not following the monoid behaviour)
+		//due to  floating point rounding.
+		//to explicitly create an empty bounding sphere (that contains no points), use Identity().
+		BoundingSphere(Vector3 position, float radius = 0.00001f);
+		
 		Vector3 _position;
 
 		//We use a radius of zero to mark the identity value, rather than keeping a seperate boolean flag, to save space.
@@ -62,6 +69,6 @@ namespace T3D {
 	//ignore the problem of scaling the radius. Only the position of the sphere is transformed.
 	inline BoundingSphere operator * (const Matrix4x4& mat, const BoundingSphere& sphere)
 	{
-		return BoundingSphere(mat * sphere.getPosition(), sphere.getRadius());
+		return BoundingSphere::create(mat * sphere.getPosition(), sphere.getRadius());
 	}
 }
