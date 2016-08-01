@@ -23,7 +23,7 @@ namespace T3D
 		Mesh(void);
 		virtual ~Mesh(void);
 
-		int getNumVerts(){
+		int getNumVerts() const{
 			return numVerts;
 		}
 
@@ -63,7 +63,7 @@ namespace T3D
 		void calcUVCube();
 
 		virtual void setVertex(int i, float x, float y, float z);
-		virtual Vector3 getVertex(int i);
+		virtual Vector3 getVertex(int i) const;
 		virtual void setColor(int i, float r, float g, float b, float a);
 		virtual Vector4 getColor(int i);
 		virtual void setNormal(int i, float x, float y, float z);

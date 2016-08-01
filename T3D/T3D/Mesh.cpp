@@ -44,7 +44,7 @@ namespace T3D
 		vertices[i*3+1] = y;
 		vertices[i*3+2] = z;
 	}
-	Vector3 Mesh::getVertex(int i){
+	Vector3 Mesh::getVertex(int i) const{
 		return Vector3(vertices[i*3], vertices[i*3+1], vertices[i*3+2]);
 	}
 	void Mesh::setColor(int i, float r, float g, float b, float a){

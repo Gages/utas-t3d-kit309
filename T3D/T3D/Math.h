@@ -14,6 +14,7 @@
 
 #include <cstdlib>
 #include <algorithm>
+#include "Vector3.h"
 
 #undef min
 #undef max
@@ -43,6 +44,13 @@ namespace T3D
 		static float randRange(float minimum, float maximum){ 
 			float r = float(rand())/RAND_MAX;
 			return r*(maximum-minimum)+minimum; 
+		}
+
+		static Vector3 randRange(Vector3 minimum, Vector3 maximum) {
+			return Vector3(
+				randRange(minimum.x, maximum.x),
+				randRange(minimum.y, maximum.y),
+				randRange(minimum.z, maximum.z));
 		}
 
 		/*! randRangeND
