@@ -93,16 +93,10 @@ namespace T3D
 		Vector3 cameraPos;
 		float distance;
 		GameObject *object;
-		//std::vector<Material*>::iterator mit;
 
 		// Single common camera for all rendering
-		//if (camera) {
-			cameraPos = camera->gameObject->getTransform()->getWorldPosition();
-			camera->calculateWorldSpaceFrustum();
-		//}
-		//else {
-//			cameraPos = Vector3(0, 0, 0);
-	//	}
+		cameraPos = camera->gameObject->getTransform()->getWorldPosition();
+		camera->calculateWorldSpaceFrustum();
 
 		buildRenderQueue(root);
 
@@ -170,18 +164,7 @@ namespace T3D
 		{
 			buildRenderQueueDontCull(child);
 		}
-		/*
-		//if (!root->children.empty())  //why do we need this test, size == 0 if children.empty()??
-		//{
-			for (unsigned int i = 0; i < root->children.size(); ++i)
-			{
-				//if (NULL != root->children[i]) //why do we need this test, children[i] should != NULL!
-				//{
-					buildRenderQueueDontCull(root->children[i]);
-				//}
-			}
-		//}
-		*/
+
 	}
 
 	/*! Sorts game objects by material

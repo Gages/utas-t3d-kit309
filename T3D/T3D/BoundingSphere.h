@@ -1,8 +1,6 @@
 #pragma once
 #include "Vector3.h"
 #include "Matrix4x4.h"
-//#include "Mesh.h"
-#include <limits>
 
 namespace T3D {
 	class BoundingSphere

@@ -1,6 +1,6 @@
 #include "BoundingSphere.h"
 #include "AxisAlignedBoundingBox.h"
-#include "Mesh.h"
+
 namespace T3D{
 	BoundingSphere::BoundingSphere(Vector3 pos, float radius)
 		: _radiusSqr(radius * radius), _position(pos)
@@ -11,35 +11,6 @@ namespace T3D{
 	{}
 
 	BoundingSphere BoundingSphere::Identity() { return BoundingSphere(); }
-
-	/*BoundingSphere BoundingSphere::createFromMesh(Mesh const* mesh) {
-
-		//Degenerate case: mesh has no vertices.
-		//return the identity bounding sphere
-		if (mesh->getNumVerts() == 0) {
-			return BoundingSphere::Identity();
-		}
-
-		Vector3 center;
-		float squaredRadius = 0;
-		{
-			//pass 1: find the center using the AABB method.
-			const int numVerts = mesh->getNumVerts();
-			AxisAlignedBoundingBox box = AxisAlignedBoundingBox(mesh->getVertex(0));
-			
-			for (int i = 1; i < numVerts; i++) {
-				box = box.growToContain(mesh->getVertex(i));
-			}
-			center = box.center();
-
-			//pass 2: find the vertex with the greatest distance from the center.
-			for (int i = 0; i < numVerts; i++) {
-				squaredRadius = std::max(mesh->getVertex(i).squaredDistance(center), squaredRadius);
-			}
-		}
-
-		return BoundingSphere(center, sqrt(squaredRadius));
-	}*/
 
 	inline bool BoundingSphere::isIdentity() const {
 		return _radiusSqr == 0;
