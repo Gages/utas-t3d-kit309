@@ -19,6 +19,24 @@
 #include "Matrix4x4.h"
 #include "Component.h"
 #include "Quaternion.h"
+#include "BoundingSphere.h"
+
+/*
+	The Transform class is horrible and is the root
+	of the problem with this engine architecture.
+
+	The way it is currently done:
+	values are implicitly "lazily" computed
+	by checking / setting boolean flags when their
+	dependent state is modified.
+
+	The way it should be done:
+	values should be explicitly computed
+	the program should be structured as
+	a series of data manipulations
+	rather than abstracting out the data flow
+	and over emphasising the scene graph in the code.
+*/
 
 namespace T3D
 {
@@ -96,6 +114,18 @@ namespace T3D
 		Transform* parent;
 		std::string name;
 		std::vector<Transform*> children;
+
+	//to support  hierarchical bounding volume (HBV) culling
+
+		BoundingSphere getBoundingSphere();
+
+	private:
+		BoundingSphere mBoundingSphere;
+		
+		bool mNeedBoundUpdate;
+		void updateBound();
+		void setNeedBoundUpdate();
+
 	}; 
 }
 

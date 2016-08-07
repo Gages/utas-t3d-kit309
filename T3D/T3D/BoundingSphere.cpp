@@ -1,6 +1,6 @@
 #include "BoundingSphere.h"
 #include "AxisAlignedBoundingBox.h"
-
+#include "Mesh.h"
 namespace T3D{
 	BoundingSphere::BoundingSphere(Vector3 pos, float radius)
 		: _radiusSqr(radius * radius), _position(pos)
@@ -12,7 +12,7 @@ namespace T3D{
 
 	BoundingSphere BoundingSphere::Identity() { return BoundingSphere(); }
 
-	BoundingSphere BoundingSphere::createFromMesh(Mesh const* mesh) {
+	/*BoundingSphere BoundingSphere::createFromMesh(Mesh const* mesh) {
 
 		//Degenerate case: mesh has no vertices.
 		//return the identity bounding sphere
@@ -39,7 +39,7 @@ namespace T3D{
 		}
 
 		return BoundingSphere(center, sqrt(squaredRadius));
-	}
+	}*/
 
 	inline bool BoundingSphere::isIdentity() const {
 		return _radiusSqr == 0;
@@ -55,6 +55,17 @@ namespace T3D{
 
 		//however this version works (and still excludes the origin point when the radius is zero)
 		return _position.squaredDistance(point) < _radiusSqr;
+	}
+
+	BoundingSphere::IntersectTest BoundingSphere::intersects(Plane p) const {
+		if (isIdentity()) return IntersectTest::Undefined;
+		else {
+			float distance = p.getDistance(_position);
+			if (distance * distance < _radiusSqr) return Overlap;
+			else {
+				return distance > 0 ? Positive : Negative;
+			}
+		}
 	}
 
 	BoundingSphere BoundingSphere::growToContain(BoundingSphere other) const {

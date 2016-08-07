@@ -15,6 +15,8 @@
 #include "Mesh.h"
 #include "Material.h"
 
+#include "BoundingSphere.h"
+
 namespace T3D
 {
 	class T3DApplication;
@@ -64,6 +66,8 @@ namespace T3D
 		void setAlpha(float alpha) { this->alpha = alpha; }		// 
 		float getAlpha() { return alpha; }
 
+		BoundingSphere getBoundingSphere() const;
+
 	protected:
 		T3DApplication *app;
 		Transform* transform;
@@ -73,6 +77,7 @@ namespace T3D
 		Mesh* mesh;
 		float alpha;			// override material alpha if < 1.0
 
+		BoundingSphere mBoundingSphere;
 	private:		
 		std::vector<Component*> components;
 

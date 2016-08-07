@@ -15,6 +15,7 @@
 #include "Component.h"
 #include "Plane.h"
 #include "Transform.h"
+#include "BoundingSphere.h"
 
 namespace T3D
 {
@@ -35,7 +36,12 @@ namespace T3D
 		Camera(projectionType type, double near, double far, double left, double right, double bottom, double top);
 		virtual ~Camera();
 
-		bool cull(GameObject* obj);
+		//bool cull(Transform* obj);
+		enum ContainsEnum {
+			None, Partial, Total
+		};
+		ContainsEnum contains(BoundingSphere volume);
+
 		void calculateWorldSpaceFrustum();
 
 	public:

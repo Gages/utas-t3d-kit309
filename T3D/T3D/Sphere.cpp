@@ -16,6 +16,7 @@
 namespace T3D{
 
 	Sphere::Sphere(float radius, int density)
+		: mRadius(radius)
 	{
 		numVerts = density*(density-1)+2;
 
@@ -76,6 +77,10 @@ namespace T3D{
 		
 		uvs = new float[numVerts*2];
 		calcUVSphere();
+	}
+
+	BoundingSphere Sphere::calculateBoundingSphere() const {
+		return BoundingSphere::create(Vector3(0, 0, 0), mRadius);
 	}
 
 

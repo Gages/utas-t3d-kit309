@@ -61,11 +61,14 @@ namespace T3D {
 		GameObject *sphere = new GameObject(this);
 		sphere->setMesh(new Sphere(0.5, 8));
 
+
 		sphere->setMaterial(red); //thankfully the renderer owns the material. (Why isn't this the case for Meshes?)
 		sphere->getTransform()->setLocalPosition(point);
 		sphere->getTransform()->setParent(root);
 		sphere->getTransform()->name = sphere_name;
-	
+
+	//	printf("Sphere %f\n", sphere->getTransform()->getBoundingSphere().getRadius());
+
 		return true;
 	}
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "Vector3.h"
 #include "Matrix4x4.h"
-#include "Mesh.h"
+//#include "Mesh.h"
 #include <limits>
 
 namespace T3D {
@@ -13,6 +13,7 @@ namespace T3D {
 		//The identity value for the BoundingSphere monoid.
 		//forall a : BindingSphere, a.growToContain(BindingSphere::Identity) == a.
 		//forall a : BindingSphere, BindingSphere::Identity.growToContain(a) == a.
+		BoundingSphere(); //unlabelled identity constructor
 		static BoundingSphere Identity(); //labelled constructor
 		//test: BoundingSphere::Identity().isIdentity() = true.
 
@@ -20,7 +21,7 @@ namespace T3D {
 		//forall a b : BindingSphere, a.growToContain(b) == b.growToContain(a).
 		BoundingSphere growToContain(BoundingSphere other) const;
 
-		static BoundingSphere createFromMesh(Mesh const*);
+		//static BoundingSphere createFromMesh(Mesh const*);
 		//What if we want to create a point-sphere that is really small, but not the identity value (which contains no points)?
 		//just leave out rad and the default value will be used.
 		//if you want a bounding sphere with no points, explicitly call Identity
@@ -37,8 +38,13 @@ namespace T3D {
 		bool           contains(Vector3) const;
 		bool		   isIdentity() const; //returns true when the bounding sphere is the identity value.
 
+		enum IntersectTest {
+			Positive, Negative, Overlap, Undefined //undefined for the identity value
+		};
+		IntersectTest intersects(Plane) const;
+
 		Vector3 getPosition() const { return _position; }
-		float   getRadius() const { return sqrt(_radiusSqr); }
+		float   getRadius() const { return sqrt(_radiusSqr); } //note that radius == 0 means the Identity value
 
 		bool operator==(const BoundingSphere& rhs) {
 			return (rhs.isIdentity() && isIdentity()) || (rhs._position == _position && rhs._radiusSqr == _radiusSqr);
@@ -46,7 +52,6 @@ namespace T3D {
 
 	private:
 
-		BoundingSphere(); //unlabelled identity constructor
 
 		//Warning!! 
 		//one should not create a sphere with radius < 0.00001f using this constructor.

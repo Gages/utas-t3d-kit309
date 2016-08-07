@@ -11,10 +11,12 @@
 // This allows use of gl array pointers
 
 #include "Cube.h"
+#include "Math.h"
 
 namespace T3D
 {
 	Cube::Cube(float size)
+		: mSize(size)
 	{
 		numVerts = 4*6;
 
@@ -109,6 +111,10 @@ namespace T3D
 			uvs[pos++] = 1; uvs[pos++] = 1; 
 			uvs[pos++] = 1; uvs[pos++] = 0; 
 		}
+	}
+
+	BoundingSphere Cube::calculateBoundingSphere() const {
+		return BoundingSphere::create(Vector3(0, 0, 0), (mSize + 0.001f) * Math::SQRT3);
 	}
 
 

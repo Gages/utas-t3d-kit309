@@ -21,6 +21,11 @@ namespace T3D
 	public:
 		Cube(float size);
 		virtual ~Cube(void);
+
+		BoundingSphere calculateBoundingSphere() const;
+
+	private:
+		float mSize;
 	};
 }
 

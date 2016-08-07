@@ -17,6 +17,7 @@
 #include "Mesh.h"
 #include "Texture.h"
 
+
 namespace T3D
 {
 	class Camera;
@@ -65,7 +66,10 @@ namespace T3D
 		void toggleAxes(){ showAxes = !showAxes; }
 
 	private:	
+
+		enum CullNeeded { Cull, NoCull };
 		virtual void buildRenderQueue(Transform *root);
+
 		virtual void loadMaterial(Material *mat) = 0;
 		virtual void unloadMaterial(Material *mat) = 0;
 

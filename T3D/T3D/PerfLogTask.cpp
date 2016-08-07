@@ -12,6 +12,7 @@
 #include <fstream>
 #include <iomanip>
 #include "perflogtask.h"
+#include "GLRenderer.h"
 
 namespace T3D{
 
@@ -58,6 +59,24 @@ namespace T3D{
 		logfile.close();
 	}
 
+	//The number of polygons in the scene.
+	//A polygon is a triangle or a quad on a mesh object
+	//To calculate this, we need to visit every mesh
+	//which can be found by visiting every game object
+	//which can be found by visiting every transform.
+	unsigned int count_polys(Transform* root) {
+		unsigned int count = 0;
+		Mesh* m;
+		if (root->gameObject && (m = root->gameObject->getMesh())) {
+			count += m->getNumTris() + m->getNumQuads();
+		}
+
+		for (auto child : root->children) {
+			count += count_polys(child);
+		}
+		return count;
+	}
+
 	void PerfLogTask::update(float dt){
 		frameCount++;
 		elapsedTime += dt;
@@ -69,6 +88,10 @@ namespace T3D{
 			double currentFrameRate = sampleFrames/sampleElapsed;
 			double averageFrameRate = frameCount/elapsedTime;
 
+			
+			unsigned int polygons_in_scene = count_polys(app->getRoot());
+			unsigned int polys_recently_rendered = ((GLRenderer*)app->getRenderer())->polys_last_frame;
+		
 			if (elapsedTime > 3 * PERF_SAMPLING_PERIOD)		// allow some settling time
 			{
 				// Alternate way of calculating average frame rate
@@ -92,8 +115,10 @@ namespace T3D{
 					ss.precision(1);
 					ss << std::fixed;
 					ss << "frames: " << frameCount;
-					ss << ", elapsed time: " << elapsedTime;
-					ss << ", frame rate: min=" << minFrameRate << ", avg=" << averageFrameRate << ", max=" << maxFrameRate << ", cur=" << currentFrameRate << " (avg=" << avgFrameRate << ")";
+				//	ss << ", elapsed time: " << elapsedTime;
+				//	ss << ", frame rate: min=" << minFrameRate << ", avg=" << averageFrameRate << ", max=" << maxFrameRate << ", cur=" << currentFrameRate << " (avg=" << avgFrameRate << ")";
+					ss << ", frame rate: " << "cur= " << currentFrameRate << ", avg = " << avgFrameRate;
+					ss << ", polys: scene=" << polygons_in_scene << ", frame=" << polys_recently_rendered;
 
 					int w = 1024;		// texture width, should be large enough for most diagnostics
 					int h = 32;			// should be enough for single line (text wrap is not supported)

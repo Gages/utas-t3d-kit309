@@ -31,6 +31,8 @@ namespace T3D
 		static const float DEG2RAD;
 		static const float RAD2DEG;
 		static const float LOG2;
+		static const float SQRT2;
+		static const float SQRT3;
 
 		static float lerp(float first, float second, float t){ return t*(second-first)+first; }
 

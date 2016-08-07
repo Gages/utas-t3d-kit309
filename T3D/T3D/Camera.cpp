@@ -85,15 +85,31 @@ namespace T3D
 		for (Plane& p : frustum) p = transform * p;
 	}
 
-	bool Camera::cull(GameObject* obj) {
-		Vector3 objpos = obj->getTransform()->getWorldPosition();
-		//printf("Bottom clip distance: %f\n", frustum[5].getDistance(objpos));
 
+	Camera::ContainsEnum Camera::contains(BoundingSphere volume) {
+		//return Partial;
+	//	Vector3 objpos = volume.getPosition();
+		//float rad = volume.getRadius();
+		bool partial = false;
 		for (Plane p : frustum) {
-			if (p.getDistance(objpos) > 0) return false;
+			//a point is on the draw side of a plane if
+			//if the distance is negative
+			
+			//a single plane is sufficient to show that
+			//the sphere is outside the view frustum
+			switch (volume.intersects(p)) {
+			case BoundingSphere::Negative:
+				break;
+			case BoundingSphere::Undefined:
+			case BoundingSphere::Positive:
+				return None;
+			case BoundingSphere::Overlap:
+				partial = true;
+				break;
+			}
 		}
 
-		return true;
+		return partial ? Partial : Total;
 	}
 
 }

@@ -131,6 +131,7 @@ namespace T3D
 	void GameObject::setMesh(Mesh *m){
 		mesh = m;
 		mesh->gameObject = this;
+		mBoundingSphere = mesh->calculateBoundingSphere();
 	}
 
 	/*! Returns the Mesh
@@ -139,7 +140,7 @@ namespace T3D
 	  */
 	Mesh* GameObject::getMesh(){
 		return mesh;
-	}	
+	}
 
 	/*! Add a Component to this game object
 	  And also initialise the Component (components should not be initialised before attaching to a game object)
@@ -160,5 +161,9 @@ namespace T3D
 		{
 			(*it)->update(dt);
 		}
+	}
+
+	BoundingSphere GameObject::getBoundingSphere() const {
+		return mBoundingSphere;
 	}
 }

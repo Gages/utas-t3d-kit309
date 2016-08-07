@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include "Mesh.h"
 #include "Math.h"
+#include "AxisAlignedBoundingBox.h"
 
 namespace T3D
 {
@@ -187,4 +188,34 @@ namespace T3D
 			setNormal(i,v);
 		}
 	}
+
+	BoundingSphere Mesh::calculateBoundingSphere() const {
+
+		//Degenerate case: mesh has no vertices.
+		//return the identity bounding sphere
+		if (getNumVerts() == 0) {
+			return BoundingSphere::Identity();
+		}
+
+		Vector3 center;
+		float squaredRadius = 0;
+		{
+			//pass 1: find the center using the AABB method.
+			const int numVerts = getNumVerts();
+			AxisAlignedBoundingBox box = AxisAlignedBoundingBox(getVertex(0));
+
+			for (int i = 1; i < numVerts; i++) {
+				box = box.growToContain(getVertex(i));
+			}
+			center = box.center();
+
+			//pass 2: find the vertex with the greatest distance from the center.
+			for (int i = 0; i < numVerts; i++) {
+				squaredRadius = std::max(getVertex(i).squaredDistance(center), squaredRadius);
+			}
+		}
+
+		return BoundingSphere::create(center, sqrt(squaredRadius));
+	}
+
 }

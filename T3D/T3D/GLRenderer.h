@@ -53,6 +53,8 @@ namespace T3D
 		void add2DOverlay(Texture *texture, int x, int y);		// 2D overlay (used for on screen diagnostic messages mainly)
 		void remove2DOverlay(Texture *texture);					// remove overlay
 
+
+		unsigned int polys_last_frame = 0;
 	private:
 		void loadMaterial(Material* mat);
 		void unloadMaterial(Material* mat);

@@ -14,6 +14,7 @@
 
 #include "Component.h"
 #include "Vector4.h"
+#include "BoundingSphere.h"
 
 namespace T3D
 {
@@ -75,6 +76,8 @@ namespace T3D
 		virtual void setFace(int i, int a, int b, int c, int d);
 		virtual void setUV(int i, float u, float v);
 
+		virtual BoundingSphere calculateBoundingSphere() const;
+
 	protected:
 		int numVerts, numTris, numQuads;
 
@@ -86,6 +89,8 @@ namespace T3D
 		unsigned int *triIndices;
 		unsigned int *quadIndices;
 	};
+
+	
 }
 
 #endif

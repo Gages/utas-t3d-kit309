@@ -82,11 +82,6 @@ namespace T3D
 		}
 	};
 
-	static bool cull_object(Camera* cam, GameObject* obj) {
-	//	return cam != NULL ? cam->cull(obj) : false;
-		return cam->cull(obj);
-	}
-
 	/*! Renders the scenegraph
 	  This method is responsible for sorting by material and rendering game objects in material priority order
 	  \param root	The root of the scenegraph to be rendered
@@ -98,7 +93,7 @@ namespace T3D
 		Vector3 cameraPos;
 		float distance;
 		GameObject *object;
-		std::vector<Material*>::iterator mit;
+		//std::vector<Material*>::iterator mit;
 
 		// Single common camera for all rendering
 		//if (camera) {
@@ -116,27 +111,28 @@ namespace T3D
 			// temp list of objects requiring sorted draw order (if any)
 			std::priority_queue<GameObject*, std::vector<GameObject*>, GameObjectCameraDistanceCompare> sorted;
 
-			for (mit = materials[i].begin(); mit!=materials[i].end(); mit++){
+			for (auto mit : materials[i]) {
+			//for (mit = materials[i].begin(); mit!=materials[i].end(); mit++){
 				
-				std::queue<GameObject*> &q = (*mit)->getQueue();	// objects to be drawn
+				std::queue<GameObject*> &q = mit->getQueue();	// objects to be drawn
 
-				if (!(*mit)->getSortedDraw()) {
+				if (!mit->getSortedDraw()) {
 					// objects for normal unsorted materials are drawn immediately
-					loadMaterial(*mit);
+					loadMaterial(mit);
 					while (!q.empty()) {
 						object = q.front();
-						if (cull_object(camera, object) && object->isVisible()) {
+						if (object->isVisible()) {
 							draw(object);
 						}
 						q.pop();
 					}
-					unloadMaterial(*mit);
+					unloadMaterial(mit);
 				}
 				else {
 					// objects to be sorted and drawn later
 					while (!q.empty()) {
 						object = q.front();
-						if (cull_object(camera, object) && object->isVisible()) {
+						if (object->isVisible()) {
 							// Note using squared distance as we only care about relative distance
 							distance = cameraPos.squaredDistance(object->getTransform()->getWorldPosition());
 							object->setDistanceToCamera(distance);
@@ -162,25 +158,64 @@ namespace T3D
 		}
 	}
 
+	//add each gameobject in depth first order
+	static void buildRenderQueueDontCull(Transform* root) {
+		GameObject* obj = root->gameObject;
+		if (obj) {
+			Material* m = obj->getMaterial();
+			if (m) m->addToQueue(obj);
+		}
+
+		for (auto child : root->children)
+		{
+			buildRenderQueueDontCull(child);
+		}
+		/*
+		//if (!root->children.empty())  //why do we need this test, size == 0 if children.empty()??
+		//{
+			for (unsigned int i = 0; i < root->children.size(); ++i)
+			{
+				//if (NULL != root->children[i]) //why do we need this test, children[i] should != NULL!
+				//{
+					buildRenderQueueDontCull(root->children[i]);
+				//}
+			}
+		//}
+		*/
+	}
+
 	/*! Sorts game objects by material
 	  This method traverses the scenegraph and adds game objects their respective material's render queues
 	  \param root	The root of the scenegraph to be sorted
 	  */
 	void Renderer::buildRenderQueue(Transform *root){
-		if (root->gameObject) {
-			Material* m = root->gameObject->getMaterial();
-			if (m) m->addToQueue(root->gameObject);
-		}
+			BoundingSphere rootBoundingSphere = root->getBoundingSphere();
+					
+			switch (camera->contains(rootBoundingSphere)) {
+				//if the object is completely outside the view frustum,
+				//do not add it to the render queue and do not recursively cull test its children
+			case Camera::None: return;
+				//if the object is completely inside the view frustum,
+				//add everything to the render queue and stop cull testing
+			case Camera::Total:
+					//start the fast path
+					buildRenderQueueDontCull(root); return;
+			case Camera::Partial:
+				//if the object overlaps with the view frustum,
+				//recursively cull test
+					GameObject* obj = root->gameObject;
+					if (obj) {
+						//if (camera->contains(obj->getBoundingSphere()) != Camera::None) {
+							Material* m = obj->getMaterial();
+							if (m) m->addToQueue(obj);
+						//}
+					}
 
-		if(!root->children.empty())
-		{
-			for(unsigned int i = 0; i < root->children.size(); ++i)
-			{
-				if(NULL != root->children[i])
-				{
-					buildRenderQueue(root->children[i]);
+					for (auto child : root->children) {
+						buildRenderQueue(child);
+					}
 				}
-			}
+
 		}
-	}
+		
 }

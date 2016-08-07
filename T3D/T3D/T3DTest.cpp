@@ -148,29 +148,32 @@ namespace T3D{
 
 		//test 12
 		//the basic guarantee of a bounding volume is that it contains at least a given set of points.
-		
 		const Cube c = Cube(TESTMAX);
-		const auto b = BoundingSphere::createFromMesh(&c);
-		for (int i = 0; i < c.getNumVerts(); i++) {
-			const auto v = c.getVertex(i);
-			assert(b.contains(v));
-		}
+		
+		const auto b1 = c.calculateBoundingSphere();
+		const auto b2 = c.Mesh::calculateBoundingSphere();
+			for (int i = 0; i < c.getNumVerts(); i++) {
+				const auto v = c.getVertex(i);
+				assert(b1.contains(v) && b2.contains(v));
+			}
+		
 
 		//test 13
 		//how much better is the two pass method than just doing a simple map / reduce?
-		auto b2 = BoundingSphere::Identity();
+		auto b3 = BoundingSphere::Identity();
 		for (int i = 0; i < c.getNumVerts(); i++) {
 			const auto v = c.getVertex(i);
-			b2 = b2.growToContain(BoundingSphere::create(v));
+			b3 = b3.growToContain(BoundingSphere::create(v));
+			// b2 += BoundingSphere::create(v);
 		/*	if (!b2.contains(v)) {
 				printf("Distance: %f\tRadius: %f\n", b2.getPosition().distance(v), b2.getRadius());
 			}*/
-			assert(b2.contains(v));
+			assert(b3.contains(v));
 		}
 
-		printf("Radius of sphere 1: %f.\nRadius of Sphere 2: %f.\n", b.getRadius(), b2.getRadius());
+		printf("Radius of sphere 1: %f.\nRadius of Sphere 2: %f.\nRadius of Sphere 3: %f.\n", b1.getRadius(), b2.getRadius(), b3.getRadius());
 		//answer for this small example: radius is 17.3 vs 23.1.
-		//the minimum radius here would be sqrt(2) * 10 = 14.1
+		//the minimum radius here would be sqrt(3) * 10 = 17.3
 	}
 
 	bool T3DTest::init(){

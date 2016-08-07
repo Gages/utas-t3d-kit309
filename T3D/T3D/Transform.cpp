@@ -35,6 +35,7 @@ namespace T3D
 		rotationMatrix = Matrix3x3::IDENTITY;
 		needLocalUpdate = false;
 		needWorldUpdate = false;
+		mNeedBoundUpdate = true;
 	} 
 
 
@@ -106,7 +107,7 @@ namespace T3D
 		Matrix4x4 scaleRotate = Matrix4x4::IDENTITY;
 		scaleRotate = (rotationMatrix*scaleMatrix);
 		localMatrix = translationMatrix*scaleRotate;
-		
+		setNeedBoundUpdate();
 		needLocalUpdate = false;
 	}
 
@@ -332,6 +333,52 @@ namespace T3D
 			}
 		}
 		return current;
+	}
+
+
+	//To support hierarchical bounding volume (HBV) culling
+	void Transform::updateBound() {
+		
+		mBoundingSphere = BoundingSphere::Identity();
+		
+		if (gameObject) {
+			mBoundingSphere = gameObject->getBoundingSphere();
+		}
+
+		for (auto child : children) {
+			mBoundingSphere = mBoundingSphere.growToContain(child->getLocalMatrix() * child->getBoundingSphere());
+		}
+
+		mNeedBoundUpdate = false;
+		/*
+		for (auto i = 0; i < children.size(); ++i) {
+			if (children[i]) { //TODO: why do we have to test this? Shouldn't a child transform always be non null...
+				mBoundingSphere.growToContain(children[i]->getLocalMatrix() * children[i]->getBoundingSphere());
+			}
+		}*/
+	}
+
+	BoundingSphere Transform::getBoundingSphere() {
+		if (mNeedBoundUpdate) updateBound();
+		return mBoundingSphere;
+	}
+
+	void Transform::setNeedBoundUpdate() {
+		//invariant:
+		//if mNeedBoundUpdate == true, then
+		//every ancestor also has mNeedBoundUpdate == true.
+
+		//recursively update so that
+		//all ancestors have mNeedBoundUpdate = true
+		//can stop updating the heirachy at the first
+		//ancestor with mNeedBoundUpdate = true already,
+		//because of the invariant.
+
+		Transform* t = this;
+		while (t && !t->mNeedBoundUpdate) {
+			t->mNeedBoundUpdate = true;
+			t = t->parent;
+		}
 	}
 }
 

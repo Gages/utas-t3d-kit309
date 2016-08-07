@@ -33,6 +33,7 @@ namespace T3D
 
 	void GLRenderer::prerender()
 	{
+		polys_last_frame = 0;
 
 		// set up lighting
 		glEnable(GL_NORMALIZE);
@@ -333,6 +334,9 @@ namespace T3D
 		//glColorPointer(4,GL_FLOAT,0,mesh->getColors());
 		glDrawElements(GL_TRIANGLES,3*mesh->getNumTris(),GL_UNSIGNED_INT,mesh->getTriIndices());
 		glDrawElements(GL_QUADS, 4 * mesh->getNumQuads(), GL_UNSIGNED_INT, mesh->getQuadIndices());
+
+		polys_last_frame += mesh->getNumQuads();
+		polys_last_frame += mesh->getNumTris();
 
 		if (showPoints) glDrawArrays(GL_POINTS, 0, mesh->getNumVerts());
 	}

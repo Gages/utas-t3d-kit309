@@ -21,6 +21,10 @@ namespace T3D{
 	public:
 		Sphere(float radius, int density = 8);
 		virtual ~Sphere(void);
+
+		BoundingSphere calculateBoundingSphere() const;
+	private:
+		float mRadius;
 	};
 
 }

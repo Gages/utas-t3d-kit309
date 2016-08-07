@@ -20,6 +20,8 @@ namespace T3D
 	const float Math::DEG2RAD = PI / float(180.0);
 	const float Math::RAD2DEG = float(180.0) / PI;
 	const float Math::LOG2 = log(float(2.0));
+	const float Math::SQRT2 = sqrt(float(2.0));
+	const float Math::SQRT3 = sqrt(float(3.0));
 
 	
 	float** Math::generateFractal(int size, float low, float high, float roughness, bool tile){
