@@ -172,7 +172,7 @@ namespace T3D
 	  \param root	The root of the scenegraph to be sorted
 	  */
 	void Renderer::buildRenderQueue(Transform *root){
-			BoundingSphere rootBoundingSphere = root->getBoundingSphere();
+			BoundingSphere rootBoundingSphere = root->getWorldMatrix() * root->getBoundingSphere();
 					
 			switch (camera->contains(rootBoundingSphere)) {
 				//if the object is completely outside the view frustum,

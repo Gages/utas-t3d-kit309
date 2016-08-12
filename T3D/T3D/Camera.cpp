@@ -86,18 +86,18 @@ namespace T3D
 	}
 
 
-	Camera::ContainsEnum Camera::contains(BoundingSphere volume) {
+	//The bounding sphere should be pre-transformed to world space
+	Camera::ContainsEnum Camera::contains(BoundingSphere wsVolume) {
 		//return Partial;
-	//	Vector3 objpos = volume.getPosition();
-		//float rad = volume.getRadius();
+
 		bool partial = false;
-		for (Plane p : frustum) {
+		for (Plane wsPlane : frustum) {
 			//a point is on the draw side of a plane if
 			//if the distance is negative
 			
 			//a single plane is sufficient to show that
 			//the sphere is outside the view frustum
-			switch (volume.intersects(p)) {
+			switch (wsVolume.intersects(wsPlane)) {
 			case BoundingSphere::Negative:
 				break;
 			case BoundingSphere::Undefined:
