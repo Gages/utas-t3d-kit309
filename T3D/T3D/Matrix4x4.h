@@ -65,7 +65,7 @@ namespace T3D
 		inline float* getData(){
 			return _m;
 		}
-        
+		        
 
 		/** Exchange the contents of this matrix with another. 
 		*/
