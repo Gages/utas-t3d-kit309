@@ -167,6 +167,10 @@ BoundingSphere BoundingSphere::grow_to_contain(const BoundingSphere& a, const Bo
 
 //frustum should be in the same space as the BoundingVolume
 BoundingVolumeIntersects BoundingSphere::intersects(const std::array<Plane, 6>& frustum) const {
+
+	//if the bounding volume has no area, then the volume can not be "inside" the view frustum.
+	if (!has_area()) return Outside;
+
 	BoundingVolumeIntersects result = Inside;
 	for (auto plane : frustum) {
 		float distance = plane.getDistance(center);
