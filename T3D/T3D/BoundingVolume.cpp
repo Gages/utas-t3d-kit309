@@ -21,8 +21,8 @@ static BoundingAABB FAST_AABB_FROM_AABB(const Matrix4x4& m, const BoundingAABB& 
 	//another example implementation
 	//bullet3: https://github.com/bulletphysics/bullet3/blob/master/src/Bullet3Geometry/b3AabbUtil.h#L182
 
-	const Vector3 center = (vol.topleft + vol.bottomright) * 0.5f;
-	const Vector3 extents = center - vol.topleft;
+	const Vector3 center = (vol.min + vol.max) * 0.5f;
+	const Vector3 extents = center - vol.min;
 	Vector3 newCenter = m * center;
 	Vector3 newExtents = Vector3(
 		abs(m[0][0] * extents.x) + abs(m[0][1] * extents.y) + abs(m[0][2] * extents.z),
@@ -41,7 +41,7 @@ static BoundingAABB BASIC_AABB_FROM_AABB(const Matrix4x4& m, const BoundingAABB&
 	//does not exploit symmetry properties of the bounding volume.
 	//transform each corner and return the extrema.
 
-	Vector3 A = vol.topleft, B = vol.bottomright;
+	Vector3 A = vol.min, B = vol.max;
 	Vector3 corners[] = {
 		//A, B,
 		Vector3(A.x, A.y, B.z),
@@ -75,12 +75,12 @@ BoundingAABB BoundingAABB::grow_to_contain(const BoundingAABB& a, const Bounding
 {
 	//if either A or B have no area,
 	//return the other AABB.
-	if (!a.has_area()) return b;
-	if (!b.has_area()) return a;
+	if (!a.has_volume()) return b;
+	if (!b.has_volume()) return a;
 
 	return BoundingAABB(
-		Math::minvec(a.topleft, b.topleft),
-		Math::maxvec(a.bottomright, b.bottomright));
+		Math::minvec(a.min, b.min),
+		Math::maxvec(a.max, b.max));
 }
 
 inline static void getVerticesPN(const Vector3& normal, const Vector3& min, const Vector3& max, Vector3& P, Vector3& N) {
@@ -111,10 +111,10 @@ BoundingVolumeIntersects BoundingAABB::intersects(const std::array<Plane, 6>& fr
 	BoundingVolumeIntersects result = Inside;
 
 	//if the bounding volume has no area, then the volume can not be "inside" the view frustum.
-	if (!has_area()) return Outside;
+	if (!has_volume()) return Outside;
 
 	for (auto plane : frustum) {
-		getVerticesPN(plane.normal, topleft, bottomright, P, N);
+		getVerticesPN(plane.normal, min, max, P, N);
 		if (plane.getDistance(N) > 0)
 			return Outside;
 		else if (plane.getDistance(P) > 0) 
@@ -131,8 +131,8 @@ BoundingSphere BoundingSphere::grow_to_contain(const BoundingSphere& a, const Bo
 {
 	//if either A or B have no area,
 	//return the other Sphere.
-	if (!a.has_area()) return b;
-	if (!b.has_area()) return a;
+	if (!a.has_volume()) return b;
+	if (!b.has_volume()) return a;
 
 	Vector3 p1 = a.center, p2 = b.center;
 	double   r1 = a.radius, r2 = b.radius;
@@ -169,7 +169,7 @@ BoundingSphere BoundingSphere::grow_to_contain(const BoundingSphere& a, const Bo
 BoundingVolumeIntersects BoundingSphere::intersects(const std::array<Plane, 6>& frustum) const {
 
 	//if the bounding volume has no area, then the volume can not be "inside" the view frustum.
-	if (!has_area()) return Outside;
+	if (!has_volume()) return Outside;
 
 	BoundingVolumeIntersects result = Inside;
 	for (auto plane : frustum) {

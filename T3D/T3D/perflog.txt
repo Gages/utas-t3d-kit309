@@ -214,3 +214,6 @@ frame rate (min/avg/max): 1000.0 / 2595.2 / 4178.8
 frames: 62190
 elapsed time: 24.8
 frame rate (min/avg/max): 1000.0 / 2502.8 / 3473.3
+frames: 63103
+elapsed time: 25.3
+frame rate (min/avg/max): 1000.0 / 2493.0 / 4080.0

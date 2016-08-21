@@ -37,7 +37,7 @@ namespace T3D {
 		float radius;
 	
 		static BoundingSphere grow_to_contain(const BoundingSphere& a, const BoundingSphere& b);
-		inline bool has_area() const { return radius != 0; }
+		inline bool has_volume() const { return radius != 0; }
 		BoundingSphere() : center(0, 0, 0), radius(0) {} //The identity value (for grow_to_contain) is the default constructor
 
 		static BoundingSphere createFromSphere(Vector3 center, float radius) {
@@ -65,13 +65,13 @@ namespace T3D {
 	};
 
 	struct BoundingAABB {
-		BoundingAABB() : topleft(0, 0, 0), bottomright(0, 0, 0) {}
-		BoundingAABB(Vector3 topleft, Vector3 bottomright) : topleft(topleft), bottomright(bottomright) {}
-		Vector3 topleft;
-		Vector3 bottomright;
+		BoundingAABB() : min(0, 0, 0), max(0, 0, 0) {}
+		BoundingAABB(Vector3 min, Vector3 max) : min(min), max(max) {}
+		Vector3 min;
+		Vector3 max;
 
 		static BoundingAABB grow_to_contain(const BoundingAABB& a, const BoundingAABB& b);
-		inline bool has_area() const { return topleft != bottomright; }
+		inline bool has_volume() const { return min != max; }
 
 		static BoundingAABB createFromSphere(Vector3 center, float radius) {
 			const auto dir = Vector3(1, 1, 1) * radius;
