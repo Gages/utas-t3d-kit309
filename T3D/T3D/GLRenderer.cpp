@@ -75,6 +75,7 @@ namespace T3D
 			}	
 		}
 
+		
 		// Clear back buffer and depth buffer before any drawing
 		glDepthMask(GL_TRUE);		// depth mask must be true to clear buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

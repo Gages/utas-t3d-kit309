@@ -98,6 +98,7 @@ namespace T3D
 		cameraPos = camera->gameObject->getTransform()->getWorldPosition();
 		camera->calculateWorldSpaceFrustum();
 
+		HBVC_MaxDepth = 0;
 		buildRenderQueue(root);
 
 		for (int i=0; i<PRIORITY_LEVELS; i++) {
@@ -195,9 +196,15 @@ namespace T3D
 						//}
 					}
 
+					//A ready crappy way to count the depth of a tree without passing an explicit variable.
+					const int depth_start = HBVC_MaxDepth + 1; //save the current depth (counting one more)
+					int max_depth_children = 0; //how deep is the deepest child
 					for (auto child : root->children) {
-						buildRenderQueue(child);
+						HBVC_MaxDepth = 0; //reset the variable to zero
+						buildRenderQueue(child); //update the HBVC_depth variable (inductive)
+						max_depth_children = std::max(max_depth_children, HBVC_MaxDepth); //update the depth iff it is deeper than before.
 					}
+					HBVC_MaxDepth = max_depth_children + depth_start;
 				}
 
 		}

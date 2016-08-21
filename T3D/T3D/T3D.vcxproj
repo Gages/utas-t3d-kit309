@@ -39,6 +39,7 @@
     <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Music.cpp" />
+    <ClCompile Include="NWayHub.cpp" />
     <ClCompile Include="ParticleBehaviour.cpp" />
     <ClCompile Include="ParticleEmitter.cpp" />
     <ClCompile Include="PerfLogTask.cpp" />
@@ -65,7 +66,7 @@
     <ClCompile Include="Tutorial1.cpp" />
     <ClCompile Include="Tutorial1_Baseline.cpp" />
     <ClCompile Include="Tutorial2.cpp" />
-    <ClCompile Include="Tutorial4.cpp" />
+    <ClCompile Include="Assignment1.cpp" />
     <ClCompile Include="WinGLApplication.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -95,7 +96,9 @@
     <ClInclude Include="Matrix3x3.h" />
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshExtra.h" />
     <ClInclude Include="Music.h" />
+    <ClInclude Include="NWayHub.h" />
     <ClInclude Include="ParticleBehaviour.h" />
     <ClInclude Include="ParticleEmitter.h" />
     <ClInclude Include="PerfLogTask.h" />
@@ -122,7 +125,7 @@
     <ClInclude Include="Tutorial1.h" />
     <ClInclude Include="Tutorial1_Baseline.h" />
     <ClInclude Include="Tutorial2.h" />
-    <ClInclude Include="Tutorial4.h" />
+    <ClInclude Include="Assignment1.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
     <ClInclude Include="WinGLApplication.h" />

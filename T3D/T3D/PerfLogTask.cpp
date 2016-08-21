@@ -13,6 +13,7 @@
 #include <iomanip>
 #include "perflogtask.h"
 #include "GLRenderer.h"
+#include "BoundingVolume.h"
 
 namespace T3D{
 
@@ -118,7 +119,16 @@ namespace T3D{
 				//	ss << ", elapsed time: " << elapsedTime;
 				//	ss << ", frame rate: min=" << minFrameRate << ", avg=" << averageFrameRate << ", max=" << maxFrameRate << ", cur=" << currentFrameRate << " (avg=" << avgFrameRate << ")";
 					ss << ", frame rate: " << "cur= " << currentFrameRate << ", avg = " << avgFrameRate;
-					ss << ", polys: scene=" << polygons_in_scene << ", frame=" << polys_recently_rendered;
+					ss << ", polys: in_scene=" << polygons_in_scene << ", in_frame=" << polys_recently_rendered;
+
+					if (std::is_same<DefaultBoundingVolume, BoundingAABB>()) {
+						ss << ", (using BoundingAABB)";
+					}
+					else {
+						ss << ", (using BoundingSphere)";
+					}
+
+					ss << ", HBVC depth: " << app->getRenderer()->HBVC_MaxDepth;
 
 					int w = 1024;		// texture width, should be large enough for most diagnostics
 					int h = 32;			// should be enough for single line (text wrap is not supported)

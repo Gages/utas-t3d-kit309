@@ -90,6 +90,8 @@ namespace T3D
 
 		bool showWireframe, showPoints, showGrid, showAxes;
 
+		int HBVC_MaxDepth = 0;
+
 	private:
 		std::vector<Material*> materials[PRIORITY_LEVELS];
 	};

@@ -1,18 +1,11 @@
 #pragma once
 
-/*
-	Header file for "bounding volume" class.
-	This header should be reusable for both the BoundingSphere and AABB implementations
-	Only one implementation should be compiled into the project.
-	This is not an abstract base class because we do not
-	want run time polymorphism; all bounding volumes should be the same type.
-*/
-
 
 #include "Matrix4x4.h"
 #include "Vector3.h"
 #include <array>	
-//controls whether to use AABB or spherical BoundingVolume
+
+//Comment the below line to use BoundingSphere instead of AABB for HBVC.
 #define USE_BOUNDING_VOLUME_AABB
 
 namespace T3D {
@@ -88,10 +81,4 @@ namespace T3D {
 		//frustum should be in the same space as the BoundingVolume
 		BoundingVolumeIntersects intersects(const std::array<Plane,6>& frustum) const;
 	};
-
-
-	/*template <class BoundingVolume>
-	inline BoundingVolume operator * (const Matrix4x4& mat, const BoundingVolume& vol) {
-		return vol.transform_by(mat);
-	}*/
 }
