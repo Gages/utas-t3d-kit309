@@ -79,8 +79,8 @@ namespace T3D{
 		calcUVSphere();
 	}
 
-	BoundingSphere Sphere::calculateBoundingSphere() const {
-		return BoundingSphere::create(Vector3(0, 0, 0), mRadius);
+	DefaultBoundingVolume Sphere::calculateBoundingVolume() const {
+		return DefaultBoundingVolume::createFromSphere(Vector3(0, 0, 0), mRadius);
 	}
 
 

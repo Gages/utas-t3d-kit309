@@ -113,10 +113,10 @@ namespace T3D
 		}
 	}
 
-	BoundingSphere Cube::calculateBoundingSphere() const {
-		return BoundingSphere::create(Vector3(0, 0, 0), (mSize + 0.001f) * Math::SQRT3);
+	DefaultBoundingVolume Cube::calculateBoundingVolume() const {
+		const Vector3 dir = Vector3(1, 1, 1) * mSize;
+		return DefaultBoundingVolume::createFromAABB(dir, dir * -1);
 	}
-
 
 	Cube::~Cube(void)
 	{

@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include "Mesh.h"
 #include "Math.h"
-#include "AxisAlignedBoundingBox.h"
+#include "BoundingVolume.h"
 
 namespace T3D
 {
@@ -189,33 +189,37 @@ namespace T3D
 		}
 	}
 
-	BoundingSphere Mesh::calculateBoundingSphere() const {
+	 DefaultBoundingVolume Mesh::calculateBoundingVolume() const {
 
-		//Degenerate case: mesh has no vertices.
+		//Degenerate case 1: mesh has no vertices.
+		//Degenerate case 2: mesh has one vertex, but no area.
 		//return the identity bounding sphere
-		if (getNumVerts() == 0) {
-			return BoundingSphere::Identity();
+		if (getNumVerts() < 2) {
+			return DefaultBoundingVolume();
 		}
 
-		Vector3 center;
-		float squaredRadius = 0;
-		{
-			//pass 1: find the center using the AABB method.
-			const int numVerts = getNumVerts();
-			AxisAlignedBoundingBox box = AxisAlignedBoundingBox(getVertex(0));
-
-			for (int i = 1; i < numVerts; i++) {
-				box = box.growToContain(getVertex(i));
-			}
-			center = box.center();
-
+		Vector3 min = getVertex(0), max = getVertex(0);
+		
+		for (int i = 1; i < getNumVerts(); i++) {
+			Vector3 vi = getVertex(i);
+			min = Math::minvec(min, vi);
+			max = Math::maxvec(max, vi);
+		}
+		
+		//If the default bounding volume is a sphere, we can do a bit better.
+		if (std::is_same<DefaultBoundingVolume, BoundingSphere>()) {
 			//pass 2: find the vertex with the greatest distance from the center.
+			float squaredRadius;
+			Vector3 center = (min + max) * 0.5f;
 			for (int i = 0; i < numVerts; i++) {
 				squaredRadius = std::max(getVertex(i).squaredDistance(center), squaredRadius);
 			}
+			return DefaultBoundingVolume::createFromSphere(center, sqrt(squaredRadius));
 		}
-
-		return BoundingSphere::create(center, sqrt(squaredRadius));
+		//otherwise just return a BoundingAABB
+		else {
+			return DefaultBoundingVolume::createFromAABB(min, max);
+		}
 	}
 
 }

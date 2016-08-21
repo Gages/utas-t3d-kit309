@@ -22,7 +22,7 @@ namespace T3D{
 		Sphere(float radius, int density = 8);
 		virtual ~Sphere(void);
 
-		BoundingSphere calculateBoundingSphere() const;
+		DefaultBoundingVolume calculateBoundingVolume() const;
 	private:
 		float mRadius;
 	};

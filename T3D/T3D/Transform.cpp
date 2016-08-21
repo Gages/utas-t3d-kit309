@@ -339,14 +339,14 @@ namespace T3D
 	//To support hierarchical bounding volume (HBV) culling
 	void Transform::updateBound() {
 		
-		mBoundingSphere = BoundingSphere::Identity();
+		mBoundingVolume = DefaultBoundingVolume();
 		
 		if (gameObject) {
-			mBoundingSphere = gameObject->getBoundingSphere();
+			mBoundingVolume = gameObject->getCachedBoundingVolume();
 		}
 
 		for (auto child : children) {
-			mBoundingSphere = mBoundingSphere.growToContain(child->getLocalMatrix() * child->getBoundingSphere());
+			mBoundingVolume = DefaultBoundingVolume::grow_to_contain(mBoundingVolume, child->getLocalMatrix() * child->getBoundingVolume());
 		}
 
 		mNeedBoundUpdate = false;
@@ -358,9 +358,9 @@ namespace T3D
 		}*/
 	}
 
-	BoundingSphere Transform::getBoundingSphere() {
+	DefaultBoundingVolume Transform::getBoundingVolume() {
 		if (mNeedBoundUpdate) updateBound();
-		return mBoundingSphere;
+		return mBoundingVolume;
 	}
 
 	void Transform::setNeedBoundUpdate() {

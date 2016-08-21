@@ -28,7 +28,7 @@
 #include "Math.h"
 #include "Sweep.h"
 #include "SweepPath.h"
-#include "BoundingSphere.h"
+#include "BoundingVolume.h"
 #include <assert.h>
 
 static const float TESTMIN = -10;
@@ -55,7 +55,7 @@ namespace T3D{
 	}
 
 	static BoundingSphere randSphere() {
-		return BoundingSphere::create(randVector(), randFloat());
+		return BoundingSphere::createFromSphere(randVector(), randFloat());
 	}
 
 	static bool implies(bool a, bool b) {
@@ -63,121 +63,7 @@ namespace T3D{
 		//return !a || b;
 	}
 
-	void test_boundingsphere() {
-		//test 1: forall a : BindingSphere, a.growToContain(BindingSphere::Identity) == a.
-		const auto id = BoundingSphere::Identity();
-
-		for (int i = 0; i < 1000; i++) {
-			const auto a = randSphere();
-			assert(a.growToContain(id) == a);
-		}
-		//test 2: forall a : BindingSphere, BindingSphere::Identity.growToContain(a) == a.
-		for (int i = 0; i < 1000; i++) {
-			const auto a = randSphere();
-			assert(id.growToContain(a) == a);
-		}
-		
-		//test 3: BoundingSphere::Identity().isIdentity() == true.
-		assert(id.isIdentity() == true);
-
-		//test 4: forall a b : BindingSphere, a.growToContain(b) == b.growToContain(a).
-		for (int i = 0; i < 1000; i++) {
-			const auto a = randSphere();
-			const auto b = randSphere();
-			assert(a.growToContain(b) == b.growToContain(a));
-		}
-
-		//test 5: forall p : Vector3, BoundingSphere::createFromPoint(p).contains(p) == true.
-		//test 6: forall p : Vector3, BoundingSphere::Identity().contains(p) == false.
-		//test 7: forall p : Vector3, BoundingSphere::createFromPoint(p).isIdentity() == false.
-		//test 8: forall p : Vector3, BoundingSphere(p, 0.0) == BoundingSphere::Identity().
-		//test 9: forall p : Vector3, BoundingSphere(p, 0.0).contains(p) == false.
-
-		for (int i = 0; i < 1000; i++) {
-			const auto p = randVector();
-			assert(BoundingSphere::create(p).contains(p) == true);
-			assert(id.contains(p) == false);
-			assert(BoundingSphere::create(p).isIdentity() == false);
-			//assert(BoundingSphere::create(p, 0).contains(p) == false);
-			//assert(BoundingSphere::create(p, 0) == id);
-		}
-
-		//Test 10: Using BoundingSphere to appromimate pi.
-		//What percent of a sphere is inside a cube with side length equal to the sphere's diameter?
-		
-		auto s = BoundingSphere::create(Vector3(0, 0, 0), TESTMAX);
-		//Let VS be the volume of a sphere, Let VC be the volume of a cube.
-		//Percent P = VS / CS = pi / 6 or approx 52.36%
-
-		//Remember that the volume of a sphere A is
-		//VS = (4/3) * pi * r * r * r
-		//And of course the volume of a cube is
-		//VC = size * size * size
-		//suppose that the radius is one half the size
-		//VC = 2r * 2r * 2r = 8 * r * r * r
-		//VS / VC = (4/3) * pi / 8 = (4pi/3) / 8 = 4pi / 24 = pi / 6
-
-		//Suppose we were to test 10,000 random points in this cubic volume
-		//to see if they were in the bounding sphere.
-		//We would expect that approximately 52% would be inside the sphere.
-		//If we multiply this result by 6, it should be equal to pi!
-		int count_inside = 0;
-		for (int i = 0; i < 10000; i++) {
-			Vector3 p = randVector();
-			count_inside += s.contains(p) ? 1 : 0;
-		}
-		printf("Test 10: (Sphere test) approximate value for pi: %f. (Actual value is %f)\n", 6.0 * (float)count_inside / 10000.0, Math::PI);
-
-		//test 11
-		//if a sphere contains a point, adding another sphere includes all the original points
-		//forall a : Vector3, b c : BoundingSphere, b.contains(a) || c.contains(a) -> b.growToContain(c).contains(a).
-		for (int i = 0; i < 10000; i++) {
-			auto a = randVector();
-			auto b = randSphere(), c = randSphere();
-			//auto x = b.growToContain(c);
-			assert(implies(b.contains(a) || c.contains(a), b.growToContain(c).contains(a)));
-			/*if (!implies(b.contains(a) == true, b.growToContain(c).contains(a) == true)) {
-				std::cout << "Failed for \n"
-					<< "\tfirst distance " << b.getPosition().distance(a) << std::endl
-					<< "\tradius 1 " << b.getRadius() << std::endl
-					<< "\tnext distance " << b.growToContain(c).getPosition().distance(a) << std::endl
-					<< "\tradius 2 " << b.growToContain(c).getRadius() << std::endl
-					<< std::endl;
-			}*/
-		}
-
-		//test 12
-		//the basic guarantee of a bounding volume is that it contains at least a given set of points.
-		const Cube c = Cube(TESTMAX);
-		
-		const auto b1 = c.calculateBoundingSphere();
-		const auto b2 = c.Mesh::calculateBoundingSphere();
-			for (int i = 0; i < c.getNumVerts(); i++) {
-				const auto v = c.getVertex(i);
-				assert(b1.contains(v) && b2.contains(v));
-			}
-		
-
-		//test 13
-		//how much better is the two pass method than just doing a simple map / reduce?
-		auto b3 = BoundingSphere::Identity();
-		for (int i = 0; i < c.getNumVerts(); i++) {
-			const auto v = c.getVertex(i);
-			b3 = b3.growToContain(BoundingSphere::create(v));
-			// b2 += BoundingSphere::create(v);
-		/*	if (!b2.contains(v)) {
-				printf("Distance: %f\tRadius: %f\n", b2.getPosition().distance(v), b2.getRadius());
-			}*/
-			assert(b3.contains(v));
-		}
-
-		printf("Radius of sphere 1: %f.\nRadius of Sphere 2: %f.\nRadius of Sphere 3: %f.\n", b1.getRadius(), b2.getRadius(), b3.getRadius());
-		//answer for this small example: radius is 17.3 vs 23.1.
-		//the minimum radius here would be sqrt(3) * 10 = 17.3
-	}
-
 	bool T3DTest::init(){
-		test_boundingsphere();
 
 		// Call init of superclass (sets up sdl and opengl)
 		//Bug: not checking return value?

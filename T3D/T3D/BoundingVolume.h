@@ -17,8 +17,8 @@
 
 namespace T3D {
 	class Plane;
-	class BoundingSphere;
-	class BoundingAABB;
+	struct BoundingSphere;
+	struct BoundingAABB;
 
 
 	enum BoundingVolumeIntersects {
@@ -51,9 +51,14 @@ namespace T3D {
 			return BoundingSphere(center, topleft.distance(center));
 		}
 
+		friend inline BoundingSphere operator*(const Matrix4x4& m, const BoundingSphere& vol) {
+			return BoundingSphere(m * vol.center, vol.radius);
+		}
+
+		/*
 		inline BoundingSphere transform_by(const Matrix4x4& mat) const {
 			return BoundingSphere(mat * center, radius);
-		}
+		}*/
 
 		//frustum should be in the same space as the BoundingVolume
 		BoundingVolumeIntersects intersects(const std::array<Plane, 6>& frustum) const;
@@ -77,14 +82,16 @@ namespace T3D {
 			return BoundingAABB(topleft, bottomright);
 		}
 
-		inline BoundingAABB transform_by(const Matrix4x4& mat) const;
+		//inline BoundingAABB transform_by(const Matrix4x4& mat) const;
+		friend BoundingAABB operator*(const Matrix4x4& m, const BoundingAABB& vol);
 
 		//frustum should be in the same space as the BoundingVolume
 		BoundingVolumeIntersects intersects(const std::array<Plane,6>& frustum) const;
 	};
 
-	template <class BoundingVolume>
+
+	/*template <class BoundingVolume>
 	inline BoundingVolume operator * (const Matrix4x4& mat, const BoundingVolume& vol) {
 		return vol.transform_by(mat);
-	}
+	}*/
 }

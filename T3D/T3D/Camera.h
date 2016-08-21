@@ -11,11 +11,11 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <vector>
+#include <array>
 #include "Component.h"
 #include "Plane.h"
 #include "Transform.h"
-#include "BoundingSphere.h"
+#include "BoundingVolume.h"
 
 namespace T3D
 {
@@ -36,11 +36,7 @@ namespace T3D
 		Camera(projectionType type, double near, double far, double left, double right, double bottom, double top);
 		virtual ~Camera();
 
-		//bool cull(Transform* obj);
-		enum ContainsEnum {
-			None, Partial, Total
-		};
-		ContainsEnum contains(BoundingSphere volume);
+		BoundingVolumeIntersects contains(DefaultBoundingVolume volume);
 
 		void calculateWorldSpaceFrustum();
 
@@ -61,7 +57,7 @@ namespace T3D
 
 	private:
 		//view frustum planes
-		std::vector<Plane> frustum;
+		std::array<Plane, 6> frustum;
 
 	};
 }

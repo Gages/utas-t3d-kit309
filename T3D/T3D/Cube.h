@@ -22,8 +22,7 @@ namespace T3D
 		Cube(float size);
 		virtual ~Cube(void);
 
-		BoundingSphere calculateBoundingSphere() const;
-
+		DefaultBoundingVolume calculateBoundingVolume() const;
 	private:
 		float mSize;
 	};

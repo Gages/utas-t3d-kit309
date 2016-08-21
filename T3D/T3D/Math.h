@@ -75,6 +75,22 @@ namespace T3D
 				std::min(maximum,value),minimum
 				); 
 		}
+
+		template <float(*M)(float, float)>
+		inline static Vector3 merge(Vector3 left, Vector3 right) {
+			return Vector3(
+				M(left.x, right.x),
+				M(left.y, right.y),
+				M(left.z, right.z));
+		}
+
+		inline static Vector3 minvec(Vector3 left, Vector3 right) {
+			return merge<std::fminf>(left, right);
+		}
+
+		inline static Vector3 maxvec(Vector3 left, Vector3 right) {
+			return merge<std::fmaxf>(left, right);
+		}
 	};
 }
 

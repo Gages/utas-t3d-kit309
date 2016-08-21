@@ -131,7 +131,7 @@ namespace T3D
 	void GameObject::setMesh(Mesh *m){
 		mesh = m;
 		mesh->gameObject = this;
-		mBoundingSphere = mesh->calculateBoundingSphere();
+		mCachedBoundingVolume = mesh->calculateBoundingVolume();
 	}
 
 	/*! Returns the Mesh
@@ -163,7 +163,7 @@ namespace T3D
 		}
 	}
 
-	BoundingSphere GameObject::getBoundingSphere() const {
-		return mBoundingSphere;
+	DefaultBoundingVolume GameObject::getCachedBoundingVolume() const {
+		return mCachedBoundingVolume;
 	}
 }

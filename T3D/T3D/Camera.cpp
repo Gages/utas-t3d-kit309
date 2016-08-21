@@ -71,15 +71,14 @@ namespace T3D
 
 		float horizontal_angle = Math::DEG2RAD * (90 + (fovx() / 2));
 		float vertical_angle = Math::DEG2RAD * (90 + (fovy / 2));
-		frustum = {
-			Plane(Vector3(0.0,0.0,-1.0), far), //far
-			Plane(Vector3(0.0, 0.0,1.0), -near),  //near
-			Plane(-Vector3(sin(horizontal_angle), 0, cos(horizontal_angle)), 0.0), //left
-			Plane(-Vector3(sin(-horizontal_angle), 0, cos(-horizontal_angle)), 0.0), //right
-			Plane(-Vector3(0,sin(-vertical_angle), cos(-vertical_angle)),0), //top
-			Plane(-Vector3(0, sin(vertical_angle), cos(vertical_angle)), 0), //bottom
-		};
 
+		frustum[0] = Plane(Vector3(0.0, 0.0, -1.0), far); //far
+		frustum[1] = Plane(Vector3(0.0, 0.0, 1.0), -near);  //near
+		frustum[2] = Plane(-Vector3(sin(horizontal_angle), 0, cos(horizontal_angle)), 0.0); //left
+		frustum[3] = Plane(-Vector3(sin(-horizontal_angle), 0, cos(-horizontal_angle)), 0.0); //right
+		frustum[4] = Plane(-Vector3(0, sin(-vertical_angle), cos(-vertical_angle)), 0); //top
+		frustum[5] = Plane(-Vector3(0, sin(vertical_angle), cos(vertical_angle)), 0); //bottom
+		
 		//get the world space transformation matrix;
 		Matrix4x4 transform = gameObject->getTransform()->getWorldMatrix();
 		for (Plane& p : frustum) p = transform * p;
@@ -87,29 +86,9 @@ namespace T3D
 
 
 	//The bounding sphere should be pre-transformed to world space
-	Camera::ContainsEnum Camera::contains(BoundingSphere wsVolume) {
+	BoundingVolumeIntersects Camera::contains(DefaultBoundingVolume wsVolume) {
 		//return Partial;
-
-		bool partial = false;
-		for (Plane wsPlane : frustum) {
-			//a point is on the draw side of a plane if
-			//if the distance is negative
-			
-			//a single plane is sufficient to show that
-			//the sphere is outside the view frustum
-			switch (wsVolume.intersects(wsPlane)) {
-			case BoundingSphere::Negative:
-				break;
-			case BoundingSphere::Undefined:
-			case BoundingSphere::Positive:
-				return None;
-			case BoundingSphere::Overlap:
-				partial = true;
-				break;
-			}
-		}
-
-		return partial ? Partial : Total;
+		return wsVolume.intersects(frustum);
 	}
 
 }

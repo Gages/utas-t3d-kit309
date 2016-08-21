@@ -172,18 +172,19 @@ namespace T3D
 	  \param root	The root of the scenegraph to be sorted
 	  */
 	void Renderer::buildRenderQueue(Transform *root){
-			BoundingSphere rootBoundingSphere = root->getWorldMatrix() * root->getBoundingSphere();
-					
+			DefaultBoundingVolume rootBoundingSphere = root->getWorldMatrix() * root->getBoundingVolume();
+			
 			switch (camera->contains(rootBoundingSphere)) {
 				//if the object is completely outside the view frustum,
 				//do not add it to the render queue and do not recursively cull test its children
-			case Camera::None: return;
+			case BoundingVolumeIntersects::Outside:
+				return;
 				//if the object is completely inside the view frustum,
 				//add everything to the render queue and stop cull testing
-			case Camera::Total:
+			case BoundingVolumeIntersects::Inside:
 					//start the fast path
 					buildRenderQueueDontCull(root); return;
-			case Camera::Partial:
+			case BoundingVolumeIntersects::Overlap:
 				//if the object overlaps with the view frustum,
 				//recursively cull test
 					GameObject* obj = root->gameObject;

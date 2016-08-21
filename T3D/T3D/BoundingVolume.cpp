@@ -8,8 +8,7 @@ Both the Spherical and AABB implementations are defined in this file.
 namespace T3D {
 
 /****************** AAAB SPHERE SECTION ***************************/
-
-BoundingAABB BoundingAABB::transform_by(const Matrix4x4& m)  const
+BoundingAABB operator*(const Matrix4x4& m, const BoundingAABB& vol)
 {
 	//assume m has uniform scaling
 	//assume m is affine
@@ -22,8 +21,8 @@ BoundingAABB BoundingAABB::transform_by(const Matrix4x4& m)  const
 	//another example implementation
 	//bullet3: https://github.com/bulletphysics/bullet3/blob/master/src/Bullet3Geometry/b3AabbUtil.h#L182
 
-	const Vector3 center = (topleft + bottomright) * 0.5f;
-	const Vector3 extents = center - topleft;
+	const Vector3 center = (vol.topleft + vol.bottomright) * 0.5f;
+	const Vector3 extents = center - vol.topleft;
 	Vector3 newCenter = m * center;
 	Vector3 newExtents = Vector3(
 		abs(m[0][0] * extents.x) + abs(m[0][1] * extents.y) + abs(m[0][2] * extents.z),
@@ -38,14 +37,6 @@ BoundingAABB BoundingAABB::transform_by(const Matrix4x4& m)  const
 }
 
 
-template <float(*M)(float, float)>
-static Vector3 merge(Vector3 left, Vector3 right) {
-	return Vector3(
-		M(left.x, right.x),
-		M(left.y, right.y),
-		M(left.z, right.z));
-}
-
 BoundingAABB BoundingAABB::grow_to_contain(const BoundingAABB& a, const BoundingAABB& b)
 {
 	//if either A or B have no area,
@@ -54,8 +45,8 @@ BoundingAABB BoundingAABB::grow_to_contain(const BoundingAABB& a, const Bounding
 	if (!b.has_area()) return a;
 
 	return BoundingAABB(
-		merge<std::fminf>(a.topleft, b.topleft),
-		merge<std::fminf>(a.bottomright, b.bottomright));
+		Math::minvec(a.topleft, b.topleft),
+		Math::maxvec(a.bottomright, b.bottomright));
 }
 
 inline static void getVerticesPN(const Vector3& normal, const Vector3& min, const Vector3& max, Vector3& P, Vector3& N) {

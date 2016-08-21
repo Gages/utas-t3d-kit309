@@ -19,7 +19,7 @@
 #include "Matrix4x4.h"
 #include "Component.h"
 #include "Quaternion.h"
-#include "BoundingSphere.h"
+#include "BoundingVolume.h"
 
 /*
 	The Transform class is horrible and is the root
@@ -117,10 +117,10 @@ namespace T3D
 
 	//to support  hierarchical bounding volume (HBV) culling
 
-		BoundingSphere getBoundingSphere();
+		DefaultBoundingVolume getBoundingVolume();
 
 	private:
-		BoundingSphere mBoundingSphere;
+		DefaultBoundingVolume mBoundingVolume;
 		
 		bool mNeedBoundUpdate;
 		void updateBound();
