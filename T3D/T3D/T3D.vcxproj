@@ -16,6 +16,7 @@
     <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Bone.cpp" />
     <ClCompile Include="BoundingSphere.cpp" />
+    <ClCompile Include="BoundingVolume.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Colour.cpp" />
     <ClCompile Include="Component.cpp" />
@@ -75,6 +76,7 @@
     <ClInclude Include="Billboard.h" />
     <ClInclude Include="Bone.h" />
     <ClInclude Include="BoundingSphere.h" />
+    <ClInclude Include="BoundingVolume.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Colour.h" />
     <ClInclude Include="Component.h" />

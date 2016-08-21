@@ -11,6 +11,7 @@
 
 #include "Matrix4x4.h"
 #include "Vector3.h"
+#include <array>	
 //controls whether to use AABB or spherical BoundingVolume
 #define USE_BOUNDING_VOLUME_AABB
 
@@ -21,7 +22,7 @@ namespace T3D {
 
 
 	enum BoundingVolumeIntersects {
-		Positive, Negative, Overlap, Undefined //undefined for the identity value
+		Inside, Outside, Overlap
 	};
 
 #ifdef USE_BOUNDING_VOLUME_AABB
@@ -54,7 +55,8 @@ namespace T3D {
 			return BoundingSphere(mat * center, radius);
 		}
 
-		BoundingVolumeIntersects intersects(Plane p) const;
+		//frustum should be in the same space as the BoundingVolume
+		BoundingVolumeIntersects intersects(const std::array<Plane, 6>& frustum) const;
 	};
 
 	struct BoundingAABB {
@@ -77,7 +79,8 @@ namespace T3D {
 
 		inline BoundingAABB transform_by(const Matrix4x4& mat) const;
 
-		BoundingVolumeIntersects intersects(Plane p) const;
+		//frustum should be in the same space as the BoundingVolume
+		BoundingVolumeIntersects intersects(const std::array<Plane,6>& frustum) const;
 	};
 
 	template <class BoundingVolume>
