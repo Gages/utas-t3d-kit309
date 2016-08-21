@@ -190,3 +190,24 @@ frame rate (min/avg/max): 1000.0 / 3302.0 / 5140.0
 frames: 74562
 elapsed time: 25.8
 frame rate (min/avg/max): 210.5 / 2887.2 / 3966.9
+frames: 29936
+elapsed time: 9.7
+frame rate (min/avg/max): 1000.0 / 3100.9 / 5311.3
+frames: 16843
+elapsed time: 6.0
+frame rate (min/avg/max): 1000.0 / 2785.8 / 5046.4
+frames: 10321
+elapsed time: 4.8
+frame rate (min/avg/max): 1000.0 / 2131.1 / 2186.7
+frames: 23939
+elapsed time: 7.7
+frame rate (min/avg/max): 1000.0 / 3094.9 / 5112.6
+frames: 10916
+elapsed time: 4.7
+frame rate (min/avg/max): 1000.0 / 2340.0 / 2520.0
+frames: 157547
+elapsed time: 132.2
+frame rate (min/avg/max): 6.4 / 1191.9 / 3426.6
+frames: 41474
+elapsed time: 16.0
+frame rate (min/avg/max): 1000.0 / 2595.2 / 4178.8

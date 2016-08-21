@@ -7,9 +7,7 @@ Both the Spherical and AABB implementations are defined in this file.
 
 namespace T3D {
 
-/****************** AAAB SPHERE SECTION ***************************/
-BoundingAABB operator*(const Matrix4x4& m, const BoundingAABB& vol)
-{
+static BoundingAABB FAST_AABB_FROM_AABB(const Matrix4x4& m, const BoundingAABB& vol) {
 	//assume m has uniform scaling
 	//assume m is affine
 
@@ -33,7 +31,42 @@ BoundingAABB operator*(const Matrix4x4& m, const BoundingAABB& vol)
 	return BoundingAABB(
 		newCenter - newExtents,
 		newCenter + newExtents
-	);
+		);
+}
+
+static BoundingAABB BASIC_AABB_FROM_AABB(const Matrix4x4& m, const BoundingAABB& vol) {
+	//A simplified implementation (for debugging purposes).
+	//does not exploit symmetry properties of the bounding volume.
+	//transform each corner and return the extrema.
+
+	Vector3 A = vol.topleft, B = vol.bottomright;
+	Vector3 corners[] = {
+		//A, B,
+		Vector3(A.x, A.y, B.z),
+		Vector3(A.x, B.y, A.z),
+		Vector3(B.x, A.y, A.z),
+		Vector3(B.x, B.y, A.z),
+		Vector3(B.x, A.y, B.z),
+		Vector3(A.x, B.y, B.z)
+	};
+
+	for (Vector3& p : corners) {
+		p = m * p;
+	}
+
+	Vector3 min = corners[0], max = corners[0];
+	for (Vector3& p : corners) {
+		min = Math::minvec(p, min);
+		max = Math::maxvec(p, max);
+	}
+
+	return BoundingAABB(min, max);
+}
+
+/****************** AAAB SPHERE SECTION ***************************/
+BoundingAABB operator*(const Matrix4x4& m, const BoundingAABB& vol)
+{
+	return BASIC_AABB_FROM_AABB(m, vol);
 }
 
 
@@ -70,6 +103,8 @@ BoundingVolumeIntersects BoundingAABB::intersects(const std::array<Plane, 6>& fr
 	//This implementation is derived from this page
 	//http://zach.in.tu-clausthal.de/teaching/cg_literatur/lighthouse3d_view_frustum_culling/index.html
 	//from the section Geometric Approach - Testing Boxes II
+	//however the frustum normals have opposite signs in this
+	//implementation, which results in the code below.
 
 	Vector3 P, N;
 	BoundingVolumeIntersects result = Inside;
@@ -79,9 +114,9 @@ BoundingVolumeIntersects BoundingAABB::intersects(const std::array<Plane, 6>& fr
 
 	for (auto plane : frustum) {
 		getVerticesPN(plane.normal, topleft, bottomright, P, N);
-		if (plane.getDistance(P) < 0)
+		if (plane.getDistance(N) > 0)
 			return Outside;
-		else if (plane.getDistance(N) < 0)
+		else if (plane.getDistance(P) > 0) 
 			result = Overlap;
 	}
 	

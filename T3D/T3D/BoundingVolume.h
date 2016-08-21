@@ -65,13 +65,13 @@ namespace T3D {
 	};
 
 	struct BoundingAABB {
+		BoundingAABB() : topleft(0, 0, 0), bottomright(0, 0, 0) {}
 		BoundingAABB(Vector3 topleft, Vector3 bottomright) : topleft(topleft), bottomright(bottomright) {}
 		Vector3 topleft;
 		Vector3 bottomright;
 
 		static BoundingAABB grow_to_contain(const BoundingAABB& a, const BoundingAABB& b);
 		inline bool has_area() const { return topleft != bottomright; }
-		BoundingAABB() : topleft(0, 0, 0), bottomright(0, 0, 0) {}
 
 		static BoundingAABB createFromSphere(Vector3 center, float radius) {
 			const auto dir = Vector3(1, 1, 1) * radius;

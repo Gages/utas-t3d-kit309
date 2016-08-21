@@ -87,7 +87,6 @@ namespace T3D
 
 	//The bounding sphere should be pre-transformed to world space
 	BoundingVolumeIntersects Camera::contains(DefaultBoundingVolume wsVolume) {
-		//return Partial;
 		return wsVolume.intersects(frustum);
 	}
 
