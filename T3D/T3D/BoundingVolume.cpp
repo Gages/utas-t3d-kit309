@@ -7,6 +7,8 @@ Both the Spherical and AABB implementations are defined in this file.
 
 namespace T3D {
 
+/****************** AAAB SPHERE SECTION ***************************/
+
 static BoundingAABB FAST_AABB_FROM_AABB(const Matrix4x4& m, const BoundingAABB& vol) {
 	//assume m has uniform scaling
 	//assume m is affine
@@ -63,10 +65,9 @@ static BoundingAABB BASIC_AABB_FROM_AABB(const Matrix4x4& m, const BoundingAABB&
 	return BoundingAABB(min, max);
 }
 
-/****************** AAAB SPHERE SECTION ***************************/
 BoundingAABB operator*(const Matrix4x4& m, const BoundingAABB& vol)
 {
-	return BASIC_AABB_FROM_AABB(m, vol);
+	return FAST_AABB_FROM_AABB(m, vol);
 }
 
 
