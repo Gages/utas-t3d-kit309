@@ -128,7 +128,7 @@ namespace T3D{
 						ss << ", (using BoundingSphere)";
 					}
 
-					ss << ", HBVC depth: " << app->getRenderer()->HBVC_MaxDepth;
+					ss << ", HBVC tests: " << app->getRenderer()->HBVC_CULLTESTS;
 
 					int w = 1024;		// texture width, should be large enough for most diagnostics
 					int h = 32;			// should be enough for single line (text wrap is not supported)

@@ -234,6 +234,15 @@
     <ClCompile Include="Assignment1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Assignment2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Assign2LogTask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mesh.h">
@@ -411,6 +420,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Assignment1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Assignment2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Assign2LogTask.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

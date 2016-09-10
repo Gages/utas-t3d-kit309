@@ -69,6 +69,7 @@ namespace T3D
 
 		enum CullNeeded { Cull, NoCull };
 		virtual void buildRenderQueue(Transform *root);
+		void buildRenderQueueLeafOnlyCull(Transform *root);
 
 		virtual void loadMaterial(Material *mat) = 0;
 		virtual void unloadMaterial(Material *mat) = 0;
@@ -90,7 +91,8 @@ namespace T3D
 
 		bool showWireframe, showPoints, showGrid, showAxes;
 
-		int HBVC_MaxDepth = 0;
+		//how many cull tests happened last frame?
+		int HBVC_CULLTESTS = 0;
 
 	private:
 		std::vector<Material*> materials[PRIORITY_LEVELS];

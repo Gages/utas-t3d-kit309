@@ -77,7 +77,7 @@ namespace T3D
 			return false;
 		}
 		glewInit();
-		glClearColor(33.0 / 256.0, 47.0 / 256.0, 61.0 / 256.0      , 0);
+		glClearColor(0.0f, 0.0f, 0.0f, 0);
 		glClearDepth(1.0f);
 		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 

@@ -82,6 +82,8 @@ namespace T3D
 		}
 	};
 
+	static void buildRenderQueueDontCull(Transform* root);
+
 	/*! Renders the scenegraph
 	  This method is responsible for sorting by material and rendering game objects in material priority order
 	  \param root	The root of the scenegraph to be rendered
@@ -98,8 +100,8 @@ namespace T3D
 		cameraPos = camera->gameObject->getTransform()->getWorldPosition();
 		camera->calculateWorldSpaceFrustum();
 
-		HBVC_MaxDepth = 0;
-		buildRenderQueue(root);
+		HBVC_CULLTESTS = 0;
+		buildRenderQueueDontCull(root);
 
 		for (int i=0; i<PRIORITY_LEVELS; i++) {
 
@@ -154,7 +156,7 @@ namespace T3D
 	}
 
 	//add each gameobject in depth first order
-	static void buildRenderQueueDontCull(Transform* root) {
+	void buildRenderQueueDontCull(Transform* root) {
 		GameObject* obj = root->gameObject;
 		if (obj) {
 			Material* m = obj->getMaterial();
@@ -168,13 +170,38 @@ namespace T3D
 
 	}
 
+	//A leaf transform has no children, but has a gameobject with a material.
+	static bool is_leaf(Transform* node, GameObject** obj, Material** m) {
+		return node->children.size() == 0 &&
+			   (*obj = node->gameObject) &&
+			   (*m = (*obj)->getMaterial());
+	}
+
+
 	/*! Sorts game objects by material
 	  This method traverses the scenegraph and adds game objects their respective material's render queues
 	  \param root	The root of the scenegraph to be sorted
 	  */
 	void Renderer::buildRenderQueue(Transform *root){
-			DefaultBoundingVolume rootBoundingSphere = root->getWorldMatrix() * root->getBoundingVolume();
-			
+		HBVC_CULLTESTS++;
+
+		DefaultBoundingVolume rootBoundingSphere;
+
+		GameObject* obj;
+		Material* m;
+		if (is_leaf(root, &obj, &m)) {
+			rootBoundingSphere = root->getWorldMatrix() * obj->getCachedBoundingVolume();
+			if (camera->contains(rootBoundingSphere) != BoundingVolumeIntersects::Outside) {
+				m->addToQueue(obj);
+			}
+
+		}
+		else
+		{
+
+			rootBoundingSphere = root->getWorldMatrix() * root->getBoundingVolume();
+
+
 			switch (camera->contains(rootBoundingSphere)) {
 				//if the object is completely outside the view frustum,
 				//do not add it to the render queue and do not recursively cull test its children
@@ -183,30 +210,53 @@ namespace T3D
 				//if the object is completely inside the view frustum,
 				//add everything to the render queue and stop cull testing
 			case BoundingVolumeIntersects::Inside:
-					//start the fast path
-					buildRenderQueueDontCull(root); return;
+				//start the fast path
+				buildRenderQueueDontCull(root); return;
 			case BoundingVolumeIntersects::Overlap:
 				//if the object overlaps with the view frustum,
 				//recursively cull test
-					GameObject* obj = root->gameObject;
-					if (obj) {
-						//if (camera->contains(obj->getBoundingSphere()) != Camera::None) {
-							Material* m = obj->getMaterial();
-							if (m) m->addToQueue(obj);
-						//}
-					}
+				/*
+				GameObject* obj = root->gameObject;
+				if (obj) {
+				//if (camera->contains(obj->getBoundingSphere()) != Camera::None) {
+				Material* m = obj->getMaterial();
+				if (m) m->addToQueue(obj);
+				//}
+				}*/
 
-					//A ready crappy way to count the depth of a tree without passing an explicit variable.
-					const int depth_start = HBVC_MaxDepth + 1; //save the current depth (counting one more)
-					int max_depth_children = 0; //how deep is the deepest child
-					for (auto child : root->children) {
-						HBVC_MaxDepth = 0; //reset the variable to zero
-						buildRenderQueue(child); //update the HBVC_depth variable (inductive)
-						max_depth_children = std::max(max_depth_children, HBVC_MaxDepth); //update the depth iff it is deeper than before.
-					}
-					HBVC_MaxDepth = max_depth_children + depth_start;
+
+
+
+				for (auto child : root->children) {
+
+					buildRenderQueue(child); //update the HBVC_depth variable (inductive)
+
 				}
 
+			}
 		}
+	}
+
+	void Renderer::buildRenderQueueLeafOnlyCull(Transform *root){
+		//
+		GameObject* obj;
+		Material* m;
+		DefaultBoundingVolume rootBoundingSphere;
+		if (is_leaf(root, &obj, &m)) {
+			HBVC_CULLTESTS++;
+
+			rootBoundingSphere = root->getWorldMatrix() * obj->getCachedBoundingVolume();
+			if (camera->contains(rootBoundingSphere) != BoundingVolumeIntersects::Outside) {
+				m->addToQueue(obj);
+			}
+
+		}
+
+		for (auto child : root->children) {
+
+			buildRenderQueueLeafOnlyCull(child); //update the HBVC_depth variable (inductive)
+
+		}
+	}
 		
 }

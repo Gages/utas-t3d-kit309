@@ -30,7 +30,7 @@
 //					HBVC using the methods in BoundingVolume
 // =========================================================================================
 
-#include "Assignment1.h"
+#include "Assignment2.h"
 
 using namespace T3D;
 
@@ -54,9 +54,9 @@ int main(int argc, char* argv[]){
 	//Known bug: the position of objects sometimes "jumps" once when the application starts.
 	//I don't know what causes this at the moment, but it doesn't seem to affect the HBVC.
 
-	auto *theApp = new Assignment1();
+	auto *theApp = new Assignment2();
 
-	theApp->farclip = 500.0f; //Default farclip distance.
+	//theApp->farclip = 500.0f; //Default farclip distance.
 	//theApp->farclip = 50.0f; //Alternative close farclip distance. Uncomment if required.
 
 	theApp->run();

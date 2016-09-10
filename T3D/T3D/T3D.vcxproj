@@ -12,6 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="Assign2LogTask.cpp" />
+    <ClCompile Include="Assignment2.cpp" />
     <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Bone.cpp" />
     <ClCompile Include="BoundingVolume.cpp" />
@@ -53,6 +55,7 @@
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="SoundTestTask.cpp" />
+    <ClCompile Include="SphereData.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Sweep.cpp" />
     <ClCompile Include="SweepPath.cpp" />
@@ -71,6 +74,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="Assign2LogTask.h" />
+    <ClInclude Include="Assignment2.h" />
     <ClInclude Include="Billboard.h" />
     <ClInclude Include="Bone.h" />
     <ClInclude Include="BoundingVolume.h" />
@@ -113,6 +118,7 @@
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="SoundTestTask.h" />
     <ClInclude Include="Sphere.h" />
+    <ClInclude Include="SphereData.h" />
     <ClInclude Include="Sweep.h" />
     <ClInclude Include="SweepPath.h" />
     <ClInclude Include="T3DApplication.h" />
